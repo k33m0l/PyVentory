@@ -7,4 +7,4 @@ COPY . /app
 # Run tests
 RUN python -m unittest
 
-CMD ["python", "main.py"]
+CMD ["python", "./src/main.py"]
