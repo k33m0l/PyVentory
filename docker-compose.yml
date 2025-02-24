@@ -1,0 +1,27 @@
+services:
+  pyventory:
+    build: .
+    links:
+      - database
+    environment:
+      - DB_PASS=${DB_PASS}
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+    depends_on:
+      database:
+        condition: service_healthy
+        restart: true
+  database:
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - C:/PyVentory/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d pyventory"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
