@@ -3,6 +3,10 @@ services:
     build: .
     links:
       - database
+    environment:
+      - DB_PASS=${DB_PASS}
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
     depends_on:
       database:
         condition: service_healthy
@@ -10,9 +14,9 @@ services:
   database:
     image: postgres:17-alpine
     environment:
-      - POSTGRES_PASSWORD=12345
-      - POSTGRES_USER=admin
-      - POSTGRES_DB=pyventory
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
       - C:/PyVentory/data:/var/lib/postgresql/data
     healthcheck:

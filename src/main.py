@@ -1,10 +1,12 @@
 import psycopg2
+import os
+
 
 connection = psycopg2.connect(
-    database="pyventory",
+    database=os.environ["DB_NAME"],
     host="database",
-    user="admin",
-    password="12345",
+    user=os.environ["DB_USER"],
+    password=os.environ["DB_PASS"],
     port="5432"
 )
 
