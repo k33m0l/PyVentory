@@ -1,5 +1,10 @@
 FROM python:3.13-slim
 
+# install psycopg2 dependencies
+RUN apt-get update
+RUN apt-get install -y libpq-dev gcc
+RUN rm -rf /var/lib/apt/lists/*
+
 # Install requirements
 COPY requirements.txt /app/requirements.txt
 WORKDIR /app
