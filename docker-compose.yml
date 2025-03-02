@@ -18,15 +18,10 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_DB=${DB_NAME}
     volumes:
-      - pyventory_data:/var/lib/postgresql/data
+      - ./pyventory_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 10s
       retries: 5
       start_period: 30s
       timeout: 10s
-
-volumes:
-  pyventory_data:
-    external: true
-    name: pyventory_data
