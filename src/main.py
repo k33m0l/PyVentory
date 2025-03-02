@@ -22,13 +22,14 @@ def connectToDB():
 def initDatabase(conn):
     try:
         cursor = operations.cursor.CursorManager().create_cursor(conn)
-        cursor.execute("CREATE TABLE inventory (name varchar(255), count int);")
+        cursor.execute("CREATE TABLE IF NOT EXISTS inventory (name varchar(255), count int);")
     except psycopg2.Error as err:
         print("Failed to create database: " + str(err))
         raise
 
 # Init DB
 connection = connectToDB()
+connection.autocommit = True
 initDatabase(connection)
 
 # Add sample data

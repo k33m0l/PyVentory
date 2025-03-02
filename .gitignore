@@ -1,5 +1,5 @@
-#v PyVentory specific ignores
-data/
+# PyVentory specific ignores
+pyventory_data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
