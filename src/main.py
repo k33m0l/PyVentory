@@ -1,5 +1,6 @@
 import psycopg2
 import os
+import operations.reader
 
 def connectToDB():
     try:
@@ -14,9 +15,9 @@ def connectToDB():
         print("Error connecting to database: " + str(err))
         raise
 
-def getCursor(conn):
+def getCursor(conn1):
     try:
-        return conn.cursor()
+        return conn1.cursor()
     except psycopg2.Error as err:
         print("Error connecting to database: " + str(err))
         raise
@@ -38,8 +39,6 @@ connection = connectToDB()
 cursor = getCursor(connection)
 initDatabase(cursor)
 
-# Query all data
-cursor.execute("SELECT * FROM inventory;")
-record = cursor.fetchall()
-for item in record:
+db_reader = operations.reader.Reader()
+for item in db_reader.readAll(connection):
     print("Data from db: " + str(item))
