@@ -1,5 +1,9 @@
 import psycopg2
 import os
+import operations.cursor
+import operations.reader
+import operations.writer
+import objects.item
 
 def connectToDB():
     try:
@@ -14,32 +18,30 @@ def connectToDB():
         print("Error connecting to database: " + str(err))
         raise
 
-def getCursor(conn):
+# Create table
+def initDatabase(conn):
     try:
-        return conn.cursor()
-    except psycopg2.Error as err:
-        print("Error connecting to database: " + str(err))
-        raise
-
-def initDatabase(cursor):
-    try:
-        # Create table
+        cursor = operations.cursor.CursorManager().create_cursor(conn)
         cursor.execute("CREATE TABLE inventory (name varchar(255), count int);")
-
-        # Add example data
-        cursor.execute("INSERT INTO inventory (name, count) VALUES('Mayo', 1);")
-        cursor.execute("INSERT INTO inventory (name, count) VALUES('Cheese', 3);")
-        cursor.execute("INSERT INTO inventory (name, count) VALUES('Salami', 4);")
     except psycopg2.Error as err:
         print("Failed to create database: " + str(err))
         raise
 
+# Init DB
 connection = connectToDB()
-cursor = getCursor(connection)
-initDatabase(cursor)
+initDatabase(connection)
 
-# Query all data
-cursor.execute("SELECT * FROM inventory;")
-record = cursor.fetchall()
-for item in record:
+# Add sample data
+data_1 = objects.item.Item("Mayo", 1)
+data_2 = objects.item.Item("Cheese", 3)
+data_3 = objects.item.Item("Salami", 4)
+
+db_writer = operations.writer.Writer()
+db_writer.add_item(connection, data_1)
+db_writer.add_item(connection, data_2)
+db_writer.add_item(connection, data_3)
+
+# Read all data from db
+db_reader = operations.reader.Reader()
+for item in db_reader.readAll(connection):
     print("Data from db: " + str(item))
