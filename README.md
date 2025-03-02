@@ -7,8 +7,6 @@
 
 ## Before first launch
 Please update the default database user and password in the [.env](.env) file!
-Create a folder called `pyventory_data`
-Create a docker volume named "pyventory_data" using `docker volume create pyventory_data --driver local --opt "type=none" --opt "device=$PWD/pyventory_data" --opt "o=bind"`
 
 ## Starting PyVentory
 To start the service with docker compose you simply have to run: `docker compose up --build -d` from the root folder.
