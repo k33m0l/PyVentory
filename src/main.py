@@ -3,6 +3,7 @@ import os
 import operations.cursor
 import operations.reader
 import operations.writer
+import objects.item
 
 def connectToDB():
     try:
@@ -31,10 +32,14 @@ connection = connectToDB()
 initDatabase(connection)
 
 # Add sample data
+data_1 = objects.item.Item("Mayo", 1)
+data_2 = objects.item.Item("Cheese", 3)
+data_3 = objects.item.Item("Salami", 4)
+
 db_writer = operations.writer.Writer()
-db_writer.add_item(connection, "Mayo", 1)
-db_writer.add_item(connection, "Cheese", 3)
-db_writer.add_item(connection, "Salami", 4)
+db_writer.add_item(connection, data_1)
+db_writer.add_item(connection, data_2)
+db_writer.add_item(connection, data_3)
 
 # Read all data from db
 db_reader = operations.reader.Reader()
