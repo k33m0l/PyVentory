@@ -1,8 +1,6 @@
 services:
   pyventory:
     build: .
-    links:
-      - database
     environment:
       - DB_PASS=${DB_PASS}
       - DB_USER=${DB_USER}
