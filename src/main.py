@@ -44,5 +44,5 @@ db_writer.add_item(connection, data_3)
 
 # Read all data from db
 db_reader = operations.reader.Reader()
-for item in db_reader.readAll(connection):
+for item in db_reader.read_all(connection):
     print("Data from db: " + str(item))

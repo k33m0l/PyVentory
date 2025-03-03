@@ -1,3 +1,4 @@
+import psycopg2
 import operations.cursor
 
 class Writer:
@@ -7,4 +8,8 @@ class Writer:
     def add_item(self, conn, item):
         cursor = operations.cursor.CursorManager().create_cursor(conn)
 
-        cursor.execute("INSERT INTO inventory (name, count) VALUES('" + item.name + "', " + str(item.amount) + ");")
+        try:
+            cursor.execute("INSERT INTO inventory (name, count) VALUES('" + item.name + "', " + str(item.amount) + ");")
+        except psycopg2.Error as err:
+            print("Failed to write into inventory: " + str(err))
+            raise
