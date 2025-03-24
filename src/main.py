@@ -1,6 +1,5 @@
 import psycopg2
 import os
-import operations.cursor
 import operations.reader
 import operations.writer
 import objects.item
@@ -21,7 +20,7 @@ def connectToDB():
 # Create table
 def initDatabase(conn):
     try:
-        cursor = operations.cursor.CursorManager().create_cursor(conn)
+        cursor = conn.cursor()
         cursor.execute("CREATE TABLE IF NOT EXISTS inventory (name varchar(255), count int);")
     except psycopg2.Error as err:
         print("Failed to create database: " + str(err))

@@ -7,3 +7,4 @@ class CursorManager:
         except psycopg2.Error as err:
             print("Failed to create database cursor: " + str(err))
             raise
+
