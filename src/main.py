@@ -1,8 +1,8 @@
 import psycopg2
 import os
-import operations.reader
-import operations.writer
-import objects.item
+from operations.reader import Reader
+from operations.writer import Writer
+from objects.item import Item
 
 def connectToDB():
     try:
@@ -32,16 +32,16 @@ connection.autocommit = True
 initDatabase(connection)
 
 # Add sample data
-data_1 = objects.item.Item("Mayo", 1)
-data_2 = objects.item.Item("Cheese", 3)
-data_3 = objects.item.Item("Salami", 4)
+data_1 = Item("Mayo", 1)
+data_2 = Item("Cheese", 3)
+data_3 = Item("Salami", 4)
 
-db_writer = operations.writer.Writer()
+db_writer = Writer()
 db_writer.add_item(connection, data_1)
 db_writer.add_item(connection, data_2)
 db_writer.add_item(connection, data_3)
 
 # Read all data from db
-db_reader = operations.reader.Reader()
+db_reader = Reader()
 for item in db_reader.read_all(connection):
     print("Data from db: " + str(item))
