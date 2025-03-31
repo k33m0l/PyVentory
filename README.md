@@ -1,5 +1,9 @@
 # PyVentory
-:construction: Under construction :construction:
+
+> [!CAUTION]
+> This is a learning project that will help me become familiar with Python, and it is :construction: under construction :construction:.
+>
+> Once I have tried out everything I want, it will be abandoned and archived.
 
 ## Requirements
 * Docker
