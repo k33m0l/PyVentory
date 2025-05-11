@@ -1,6 +1,7 @@
 services:
   pyventory:
     build: .
+    command: sleep infinity
     environment:
       - DB_PASS=${DB_PASS}
       - DB_USER=${DB_USER}
