@@ -1,6 +1,5 @@
 import psycopg2
 import os
-from operations.reader import Reader
 from operations.writer import Writer
 from objects.item import Item
 
@@ -42,10 +41,7 @@ def init_application():
     db_writer.add_item(connection, data_2)
     db_writer.add_item(connection, data_3)
 
-    # Read all data from db
-    db_reader = Reader()
-    for item in db_reader.read_all(connection):
-        print("Data from db: " + str(item))
+    connection.close()
 
 if __name__ == "__main__":
     init_application()
