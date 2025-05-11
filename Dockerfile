@@ -17,8 +17,6 @@ RUN python -m unittest
 # Setup links and permissions
 RUN mkdir -p /root/.local/bin
 
-RUN chmod +x ./src/demo.py
-RUN ln -s /app/src/demo.py /root/.local/bin/mydemo
 RUN chmod +x ./src/service/items.py
 RUN ln -s /app/src/service/items.py /root/.local/bin/items
 
