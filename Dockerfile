@@ -14,5 +14,13 @@ COPY . /app
 # Run tests
 RUN python -m unittest
 
+# Setup links and permissions
+RUN mkdir -p /root/.local/bin
+
+RUN chmod +x ./src/demo.py
+RUN ln -s /app/src/demo.py /root/.local/bin/mydemo
+
+ENV PATH="/root/.local/bin:$PATH"
+
 # Start application
 CMD ["python", "./src/main.py"]
