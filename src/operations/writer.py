@@ -7,7 +7,13 @@ class Writer:
     def add_item(self, conn, item):
         try:
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO inventory (name, count) VALUES('" + item.name + "', " + str(item.amount) + ");")
+            cursor.execute(
+                "INSERT INTO inventory (name, count) VALUES(%(item_name)s, %(item_amount)s);",
+                {
+                    "item_name": item.name,
+                    "item_amount": str(item.amount),
+                }
+            )
         except psycopg2.Error as err:
             print("Failed to write into inventory: " + str(err))
             raise
