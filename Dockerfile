@@ -21,6 +21,6 @@ ENV PATH="/root/.local/bin:$PATH"
 
 RUN chmod +x ./src/service/items.py
 RUN ln -s /app/src/service/items.py /root/.local/bin/items
+RUN chmod +x ./src/service/tables.py
+RUN ln -s /app/src/service/tables.py /root/.local/bin/tables
 
-# Start application
-CMD ["python", "./src/main.py"]
