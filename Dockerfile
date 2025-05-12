@@ -12,16 +12,15 @@ RUN pip install -r requirements.txt
 
 COPY . /app
 # Run tests
+ENV PYTHONPATH="/app/src"
 RUN python -m unittest
 
 # Setup links and permissions
 RUN mkdir -p /root/.local/bin
+ENV PATH="/root/.local/bin:$PATH"
 
 RUN chmod +x ./src/service/items.py
 RUN ln -s /app/src/service/items.py /root/.local/bin/items
-
-ENV PATH="/root/.local/bin:$PATH"
-ENV PYTHONPATH="/app/src"
 
 # Start application
 CMD ["python", "./src/main.py"]

@@ -14,5 +14,8 @@ def run():
     fetch_all(conn)
     conn.close()
 
+def dummy_method_test():
+    return "dummy"
+
 if __name__ == "__main__":
     run()
