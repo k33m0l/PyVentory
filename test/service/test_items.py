@@ -2,9 +2,9 @@ import unittest
 from unittest.mock import MagicMock, patch
 import src.service.items as under_test
 
-SAMPLE_ITEM_1 = ("Item1", 10)
-SAMPLE_ITEM_2 = ("Item2", 100)
-SAMPLE_ITEM_3 = ("Item3", 3)
+SAMPLE_ITEM_1 = (1, "Item1", 10)
+SAMPLE_ITEM_2 = (2, "Item2", 100)
+SAMPLE_ITEM_3 = (3, "Item3", 3)
 
 class ItemsTest(unittest.TestCase):
 
