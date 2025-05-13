@@ -7,17 +7,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     modes = parser.add_mutually_exclusive_group(required=True)
-    modes.add_argument("-c", action="store_true", help="Sets mode to table creation")
-    modes.add_argument("-d", action="store_true", help="Sets mode to table deletion")
+    modes.add_argument("-c", type=str, help="Sets mode to table creation. Table name must be provided.")
+    modes.add_argument("-d", type=str, help="Sets mode to table deletion. Table name must be provided.")
     modes.add_argument("-l", action="store_true", help="Sets mode to table read")
-
-    parser.add_argument("-t", type=str, help="Table name for create and delete modes")
     args = parser.parse_args()
 
-    if args.c and args.t:
-        create_table(args.t)
-    elif args.d and args.t:
-        delete_table(args.t)
+    if args.c:
+        create_table(args.c)
+    elif args.d:
+        delete_table(args.d)
     elif args.l:
         tables = read_all_tables()
         for table in tables:
