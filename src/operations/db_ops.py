@@ -107,17 +107,16 @@ def delete_item_by_id(table_name, item_id):
         print("Failed to read from inventory: " + str(err))
         raise
 
-def add_item(item: Item):
+def add_item(table_name, item: Item):
     try:
         conn = connect_to_db()
         cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO inventory (name, count) VALUES(%(item_name)s, %(item_amount)s);",
-            {
-                "item_name": item.name,
-                "item_amount": str(item.amount),
-            }
+        query = psycopg2.sql.SQL("INSERT INTO {table} (name, count) VALUES({item_name}, {item_amount});").format(
+            table=psycopg2.sql.Identifier(table_name),
+            item_name=psycopg2.sql.Identifier(item.name),
+            item_amount=psycopg2.sql.Identifier(item.amount),
         )
+        cursor.execute(query)
         conn.close()
     except psycopg2.Error as err:
         print("Failed to write into inventory: " + str(err))
