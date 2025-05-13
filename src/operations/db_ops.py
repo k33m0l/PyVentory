@@ -1,5 +1,6 @@
 import psycopg2
 import os
+from objects.item import Item
 
 def connect_to_db():
     try:
@@ -14,4 +15,32 @@ def connect_to_db():
         return conn
     except psycopg2.Error as err:
         print("Error connecting to database: " + str(err))
+        raise
+
+def read_all_items():
+    try:
+        conn = connect_to_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM inventory;")
+        response = cursor.fetchall()
+        conn.close()
+        return response
+    except psycopg2.Error as err:
+        print("Failed to read from inventory: " + str(err))
+        raise
+
+def add_item(item: Item):
+    try:
+        conn = connect_to_db()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO inventory (name, count) VALUES(%(item_name)s, %(item_amount)s);",
+            {
+                "item_name": item.name,
+                "item_amount": str(item.amount),
+            }
+        )
+        conn.close()
+    except psycopg2.Error as err:
+        print("Failed to write into inventory: " + str(err))
         raise
