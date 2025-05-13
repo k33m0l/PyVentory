@@ -37,6 +37,19 @@ def create_table(table_name):
         print("Failed to create database: " + str(err))
         raise
 
+def delete_table(table_name):
+    try:
+        conn = connect_to_db()
+        cursor = conn.cursor()
+        query = psycopg2.sql.SQL("DROP TABLE IF EXISTS {}").format(
+            psycopg2.sql.Identifier(table_name)
+        )
+        cursor.execute(query)
+        conn.close()
+    except psycopg2.Error as err:
+        print("Failed to create database: " + str(err))
+        raise
+
 def read_all_items():
     try:
         conn = connect_to_db()
