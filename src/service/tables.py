@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import psycopg2
-from db_ops import connect_to_db
+from operations.db_ops import connect_to_db
 from objects.item import Item
 from operations.writer import Writer
 
@@ -20,19 +20,7 @@ def create_table():
         print("Failed to create database: " + str(err))
         raise
 
-def temp_add_items():
-    item1 = Item("DemoItem", 10)
-    item2 = Item("AnotherItem", 32)
-
-    conn = connect_to_db()
-
-    writer = Writer()
-    writer.add_item(conn, item1)
-    writer.add_item(conn, item2)
-    conn.close()
-
 if __name__ == "__main__":
     # input will go here
     create_table()
-    temp_add_items()
 

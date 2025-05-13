@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-from db_ops import connect_to_db
+from operations.db_ops import connect_to_db
 from operations.reader import Reader
 
 def fetch_all():
