@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
 
 import argparse
-from db_ops import connect_to_db
-from operations.reader import Reader
+from operations.db_ops import read_all_items
 
 def fetch_all():
-    conn = connect_to_db()
-    db_reader = Reader()
-    response = db_reader.read_all(conn)
-    conn.close()
-    return response
+    return read_all_items()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
