@@ -101,24 +101,31 @@ class ItemsTest(unittest.TestCase):
         mock_conn.close.assert_called_once()
 
     @patch("src.operations.db_ops.connect_to_db")
-    def test_read_all_items(self, mock_connect_to_db):
+    @patch("src.operations.db_ops.psycopg2.sql.SQL")
+    @patch("src.operations.db_ops.psycopg2.sql.Identifier")
+    def test_read_all_items(self, mock_identifier_class, mock_sql_class, mock_connect_to_db):
         # GIVEN
+        expected_query = "SELECT * FROM testdbname;"
         mock_conn = MagicMock()
         mock_connect_to_db.return_value = mock_conn
         mock_cursor = MagicMock()
         mock_conn.cursor.return_value = mock_cursor
+        mock_sql = mock_sql_class.return_value
+        mock_sql.format.return_value = expected_query
+        mock_identifier = mock_identifier_class.return_value
         mock_cursor.fetchall.return_value = [SAMPLE_ITEM_1, SAMPLE_ITEM_2, SAMPLE_ITEM_3]
 
         expected = [SAMPLE_ITEM_1, SAMPLE_ITEM_2, SAMPLE_ITEM_3]
         
         # WHEN
-        result = under_test.read_all_items()
+        result = under_test.read_all_items("testdbname")
         
         # THEN
         self.assertEqual(expected, result)
         mock_connect_to_db.assert_called_once()
         mock_conn.cursor.assert_called_once()
-        mock_cursor.execute.assert_called_once_with("SELECT * FROM inventory;")
+        mock_sql.format.assert_called_once_with(mock_identifier)
+        mock_cursor.execute.assert_called_once_with(expected_query)
         mock_cursor.fetchall.assert_called_once()
         mock_conn.close.assert_called_once()
 

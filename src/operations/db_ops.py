@@ -41,7 +41,7 @@ def delete_table(table_name):
     try:
         conn = connect_to_db()
         cursor = conn.cursor()
-        query = psycopg2.sql.SQL("DROP TABLE IF EXISTS {}").format(
+        query = psycopg2.sql.SQL("DROP TABLE IF EXISTS {};").format(
             psycopg2.sql.Identifier(table_name)
         )
         cursor.execute(query)
@@ -62,11 +62,14 @@ def read_all_tables():
         print("Failed to read from inventory: " + str(err))
         raise
 
-def read_all_items():
+def read_all_items(table_name):
     try:
         conn = connect_to_db()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM inventory;")
+        query = psycopg2.sql.SQL("SELECT * FROM {};").format(
+            psycopg2.sql.Identifier(table_name)
+        )
+        cursor.execute(query)
         response = cursor.fetchall()
         conn.close()
         return response
