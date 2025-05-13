@@ -79,6 +79,28 @@ class ItemsTest(unittest.TestCase):
         mock_conn.close.assert_called_once()
 
     @patch("src.operations.db_ops.connect_to_db")
+    def test_read_all_tables(self, mock_connect_to_db):
+        # GIVEN
+        mock_conn = MagicMock()
+        mock_connect_to_db.return_value = mock_conn
+        mock_cursor = MagicMock()
+        mock_conn.cursor.return_value = mock_cursor
+        mock_cursor.fetchall.return_value = ["testdbname", "anotherdb"]
+
+        expected = ["testdbname", "anotherdb"]
+        
+        # WHEN
+        result = under_test.read_all_tables()
+        
+        # THEN
+        self.assertEqual(expected, result)
+        mock_connect_to_db.assert_called_once()
+        mock_conn.cursor.assert_called_once()
+        mock_cursor.execute.assert_called_once_with("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';")
+        mock_cursor.fetchall.assert_called_once()
+        mock_conn.close.assert_called_once()
+
+    @patch("src.operations.db_ops.connect_to_db")
     def test_read_all_items(self, mock_connect_to_db):
         # GIVEN
         mock_conn = MagicMock()

@@ -50,6 +50,18 @@ def delete_table(table_name):
         print("Failed to create database: " + str(err))
         raise
 
+def read_all_tables():
+    try:
+        conn = connect_to_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';")
+        response = cursor.fetchall()
+        conn.close()
+        return response
+    except psycopg2.Error as err:
+        print("Failed to read from inventory: " + str(err))
+        raise
+
 def read_all_items():
     try:
         conn = connect_to_db()
