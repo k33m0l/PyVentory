@@ -77,6 +77,20 @@ def read_all_items(table_name):
         print("Failed to read from inventory: " + str(err))
         raise
 
+def delete_item_by_id(table_name, item_id):
+    try:
+        conn = connect_to_db()
+        cursor = conn.cursor()
+        query = psycopg2.sql.SQL("DELETE FROM {table} WHERE item_id = {id}").format(
+            table=psycopg2.sql.Identifier(table_name),
+            id=psycopg2.sql.Identifier(item_id),
+        )
+        cursor.execute(query)
+        conn.close()
+    except psycopg2.Error as err:
+        print("Failed to read from inventory: " + str(err))
+        raise
+
 def add_item(item: Item):
     try:
         conn = connect_to_db()
