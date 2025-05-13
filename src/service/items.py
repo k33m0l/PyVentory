@@ -4,7 +4,7 @@ import argparse
 from operations.db_ops import read_all_items
 
 def fetch_all():
-    return read_all_items()
+    return read_all_items("inventory")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

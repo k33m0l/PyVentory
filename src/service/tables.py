@@ -4,5 +4,5 @@ from operations.db_ops import create_table
 
 if __name__ == "__main__":
     # input will go here
-    create_table()
+    create_table("inventory")
 
