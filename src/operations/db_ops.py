@@ -97,7 +97,7 @@ def delete_item_by_id(table_name, item_id):
     try:
         conn = connect_to_db()
         cursor = conn.cursor()
-        query = psycopg2.sql.SQL("DELETE FROM {table} WHERE item_id = {id}").format(
+        query = psycopg2.sql.SQL("DELETE FROM {table} WHERE item_id = {id};").format(
             table=psycopg2.sql.Identifier(table_name),
             id=psycopg2.sql.Identifier(item_id),
         )
@@ -107,16 +107,39 @@ def delete_item_by_id(table_name, item_id):
         print("Failed to read from inventory: " + str(err))
         raise
 
+# TODO: needs unit test
+def update_item_by_id(table_name, item_id, **kwargs):
+    validated_arguments = {key: value for key, value in kwargs.items() if value is not None}
+    update_variables = psycopg2.sql.SQL(", ").join(
+        psycopg2.sql.Composed([
+            psycopg2.sql.Identifier(argument),
+            psycopg2.sql.SQL(" = "),
+            psycopg2.sql.Placeholder(),
+        ]) for argument in validated_arguments 
+    )
+    try:
+        conn = connect_to_db()
+        cursor = conn.cursor()
+        query = psycopg2.sql.SQL("UPDATE {table} SET {update_variables} WHERE item_id = %s;").format(
+            table=psycopg2.sql.Identifier(table_name),
+            update_variables=update_variables
+        )
+
+        query_params = list(validated_arguments .values()) + [item_id]
+        cursor.execute(query, query_params)
+        conn.close()
+    except psycopg2.Error as err:
+        print("Failed to read from inventory: " + str(err))
+        raise
+
 def add_item(table_name, item: Item):
     try:
         conn = connect_to_db()
         cursor = conn.cursor()
-        query = psycopg2.sql.SQL("INSERT INTO {table} (name, count) VALUES({item_name}, {item_amount});").format(
+        query = psycopg2.sql.SQL("INSERT INTO {table} (name, count) VALUES(%s, %s);").format(
             table=psycopg2.sql.Identifier(table_name),
-            item_name=psycopg2.sql.Identifier(item.name),
-            item_amount=psycopg2.sql.Identifier(item.amount),
         )
-        cursor.execute(query)
+        cursor.execute(query, (item.name, item.amount))
         conn.close()
     except psycopg2.Error as err:
         print("Failed to write into inventory: " + str(err))

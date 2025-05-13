@@ -192,7 +192,7 @@ class ItemsTest(unittest.TestCase):
     @patch("src.operations.db_ops.psycopg2.sql.Identifier")
     def test_add_item(self, mock_identifier_class, mock_sql_class, mock_connect_to_db):
         # GIVEN
-        expected_query = f"INSERT INTO testdbname (name, count) VALUES({ITEM_WITHOUT_ID.name}, {ITEM_WITHOUT_ID.amount});"
+        expected_query = f"INSERT INTO testdbname (name, count) VALUES(%s, %s);"
         mock_conn = MagicMock()
         mock_connect_to_db.return_value = mock_conn
         mock_cursor = MagicMock()
@@ -209,10 +209,8 @@ class ItemsTest(unittest.TestCase):
         mock_conn.cursor.assert_called_once()
         mock_sql.format.assert_called_once_with(
             table=mock_identifier,
-            item_name=mock_identifier,
-            item_amount=mock_identifier,
         )
-        mock_cursor.execute.assert_called_once_with(expected_query)
+        mock_cursor.execute.assert_called_once_with(expected_query, (ITEM_WITHOUT_ID.name, ITEM_WITHOUT_ID.amount))
         mock_conn.close.assert_called_once()
 
 if __name__ == '__main__':
