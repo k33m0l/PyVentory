@@ -20,7 +20,7 @@ RUN mkdir -p /root/.local/bin
 ENV PATH="/root/.local/bin:$PATH"
 
 RUN chmod +x ./src/service/items.py
-RUN ln -s /app/src/service/items.py /root/.local/bin/items
+RUN ln -s /app/src/service/items.py /root/.local/bin/item
 RUN chmod +x ./src/service/tables.py
-RUN ln -s /app/src/service/tables.py /root/.local/bin/tables
+RUN ln -s /app/src/service/tables.py /root/.local/bin/table
 
