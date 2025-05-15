@@ -81,11 +81,10 @@ def read_item_by_id(table_name, item_id):
     try:
         conn = connect_to_db()
         cursor = conn.cursor()
-        query = psycopg2.sql.SQL("SELECT * FROM {table} WHERE item_id = {id};").format(
+        query = psycopg2.sql.SQL("SELECT * FROM {table} WHERE item_id = %s;").format(
             table=psycopg2.sql.Identifier(table_name),
-            id=psycopg2.sql.Identifier(item_id),
         )
-        cursor.execute(query)
+        cursor.execute(query, [item_id])
         response = cursor.fetchone()
         conn.close()
         return response
@@ -97,11 +96,10 @@ def delete_item_by_id(table_name, item_id):
     try:
         conn = connect_to_db()
         cursor = conn.cursor()
-        query = psycopg2.sql.SQL("DELETE FROM {table} WHERE item_id = {id};").format(
+        query = psycopg2.sql.SQL("DELETE FROM {table} WHERE item_id = %s;").format(
             table=psycopg2.sql.Identifier(table_name),
-            id=psycopg2.sql.Identifier(item_id),
         )
-        cursor.execute(query)
+        cursor.execute(query, [item_id])
         conn.close()
     except psycopg2.Error as err:
         print("Failed to read from inventory: " + str(err))
@@ -125,7 +123,7 @@ def update_item_by_id(table_name, item_id, **kwargs):
             update_variables=update_variables
         )
 
-        query_params = list(validated_arguments .values()) + [item_id]
+        query_params = list(validated_arguments.values()) + [item_id]
         cursor.execute(query, query_params)
         conn.close()
     except psycopg2.Error as err:

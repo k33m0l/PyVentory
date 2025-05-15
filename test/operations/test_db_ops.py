@@ -135,7 +135,7 @@ class ItemsTest(unittest.TestCase):
     @patch("src.operations.db_ops.psycopg2.sql.Identifier")
     def test_read_item_by_id(self, mock_identifier_class, mock_sql_class, mock_connect_to_db):
         # GIVEN
-        expected_query = "SELECT * FROM testdbname WHERE item_id = 1;"
+        expected_query = "SELECT * FROM testdbname WHERE item_id = %s;"
         mock_conn = MagicMock()
         mock_connect_to_db.return_value = mock_conn
         mock_cursor = MagicMock()
@@ -154,9 +154,8 @@ class ItemsTest(unittest.TestCase):
         mock_conn.cursor.assert_called_once()
         mock_sql.format.assert_called_once_with(
             table=mock_identifier,
-            id=mock_identifier,
         )
-        mock_cursor.execute.assert_called_once_with(expected_query)
+        mock_cursor.execute.assert_called_once_with(expected_query, [1])
         mock_cursor.fetchone.assert_called_once()
         mock_conn.close.assert_called_once()
 
@@ -165,7 +164,7 @@ class ItemsTest(unittest.TestCase):
     @patch("src.operations.db_ops.psycopg2.sql.Identifier")
     def test_delete_item_by_id(self, mock_identifier_class, mock_sql_class, mock_connect_to_db):
         # GIVEN
-        expected_query = "DELETE FROM testdbname WHERE item_id = 1"
+        expected_query = "DELETE FROM testdbname WHERE item_id = %s"
         mock_conn = MagicMock()
         mock_connect_to_db.return_value = mock_conn
         mock_cursor = MagicMock()
@@ -182,9 +181,38 @@ class ItemsTest(unittest.TestCase):
         mock_conn.cursor.assert_called_once()
         mock_sql.format.assert_called_once_with(
             table=mock_identifier,
-            id=mock_identifier,
         )
-        mock_cursor.execute.assert_called_once_with(expected_query)
+        mock_cursor.execute.assert_called_once_with(expected_query, [1])
+        mock_conn.close.assert_called_once()
+
+    @patch("src.operations.db_ops.connect_to_db")
+    @patch("src.operations.db_ops.psycopg2.sql.SQL")
+    @patch("src.operations.db_ops.psycopg2.sql.Identifier")
+    @patch("src.operations.db_ops.psycopg2.sql.Composed")
+    def test_update_item_by_id(self, mock_composed_class, mock_identifier_class, mock_sql_class, mock_connect_to_db):
+        # GIVEN
+        expected_query = "UPDATE testdbname SET name = %s, count = %s WHERE item_id = %s;"
+        mock_conn = MagicMock()
+        mock_connect_to_db.return_value = mock_conn
+        mock_cursor = MagicMock()
+        mock_conn.cursor.return_value = mock_cursor
+        mock_sql = mock_sql_class.return_value
+        mock_composed = mock_composed_class.return_value
+        mock_sql.join.return_value = mock_composed
+        mock_sql.format.return_value = expected_query
+        mock_identifier = mock_identifier_class.return_value
+        
+        # WHEN
+        under_test.update_item_by_id("testdbname", 1, name = "New name", count = 5)
+        
+        # THEN
+        mock_connect_to_db.assert_called_once()
+        mock_conn.cursor.assert_called_once()
+        mock_sql.format.assert_called_once_with(
+            table=mock_identifier,
+            update_variables=mock_composed
+        )
+        mock_cursor.execute.assert_called_once_with(expected_query, ["New name", 5, 1])
         mock_conn.close.assert_called_once()
 
     @patch("src.operations.db_ops.connect_to_db")
