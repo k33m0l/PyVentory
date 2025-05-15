@@ -105,7 +105,6 @@ def delete_item_by_id(table_name, item_id):
         print("Failed to read from inventory: " + str(err))
         raise
 
-# TODO: needs unit test
 def update_item_by_id(table_name, item_id, **kwargs):
     validated_arguments = {key: value for key, value in kwargs.items() if value is not None}
     update_variables = psycopg2.sql.SQL(", ").join(
