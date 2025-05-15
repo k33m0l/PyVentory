@@ -218,6 +218,36 @@ class ItemsTest(unittest.TestCase):
     @patch("src.operations.db_ops.connect_to_db")
     @patch("src.operations.db_ops.psycopg2.sql.SQL")
     @patch("src.operations.db_ops.psycopg2.sql.Identifier")
+    @patch("src.operations.db_ops.psycopg2.sql.Composed")
+    def test_update_item_by_id_with_not_all_fields_provided(self, mock_composed_class, mock_identifier_class, mock_sql_class, mock_connect_to_db):
+        # GIVEN
+        expected_query = "UPDATE testdbname SET count = %s WHERE item_id = %s;"
+        mock_conn = MagicMock()
+        mock_connect_to_db.return_value = mock_conn
+        mock_cursor = MagicMock()
+        mock_conn.cursor.return_value = mock_cursor
+        mock_sql = mock_sql_class.return_value
+        mock_composed = mock_composed_class.return_value
+        mock_sql.join.return_value = mock_composed
+        mock_sql.format.return_value = expected_query
+        mock_identifier = mock_identifier_class.return_value
+        
+        # WHEN
+        under_test.update_item_by_id("testdbname", 1, count = 10)
+        
+        # THEN
+        mock_connect_to_db.assert_called_once()
+        mock_conn.cursor.assert_called_once()
+        mock_sql.format.assert_called_once_with(
+            table=mock_identifier,
+            update_variables=mock_composed
+        )
+        mock_cursor.execute.assert_called_once_with(expected_query, [10, 1])
+        mock_conn.close.assert_called_once()
+
+    @patch("src.operations.db_ops.connect_to_db")
+    @patch("src.operations.db_ops.psycopg2.sql.SQL")
+    @patch("src.operations.db_ops.psycopg2.sql.Identifier")
     def test_add_item(self, mock_identifier_class, mock_sql_class, mock_connect_to_db):
         # GIVEN
         expected_query = f"INSERT INTO testdbname (name, count) VALUES(%s, %s);"
